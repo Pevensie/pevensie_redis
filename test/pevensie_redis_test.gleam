@@ -1,5 +1,6 @@
 import gleam/erlang/process
 import gleam/option.{None, Some}
+import gleam/result
 import gleeunit
 import gleeunit/should
 import pevensie/cache
