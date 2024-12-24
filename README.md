@@ -60,17 +60,8 @@ will start this actor. This can be called once on boot, and will be reused for t
 The [`disconnect`](https://hexdocs.pm/pevensie/pevensie/auth.html#disconnect) function
 will stop the actor.
 
-### Performance
-
-Given that BEAM actors can only process one message at a time, you may run into
-performance issues when attempting to make many concurrent requests to Redis.
-
-Future versions of this driver will replace the actor with a connection pool, but until
-then, the recommended approach is to use a connection pooling library like
-[puddle](https://hexdocs.pm/puddle) containing a pool of `PevensieCache` values.
-
-`PevensieCache` is a minimal wrapper around the `Redis` type provided by this driver,
-so this approach will not use too many system resources.
+Pevensie Redis uses the [radish](https://github.com/massivefermion/radish) library to
+connect to Redis. Connection pooling is managed using [Bath](https://github.com/Pevensie/bath).
 
 ## Implementation Details
 

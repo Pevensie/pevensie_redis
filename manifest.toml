@@ -3,6 +3,7 @@
 
 packages = [
   { name = "argus", version = "1.0.2", build_tools = ["gleam"], requirements = ["gleam_stdlib", "jargon"], otp_app = "argus", source = "hex", outer_checksum = "E51F0D4657458F0F4AA0439EAE88B4E18E3E3E1337DF5C21155DB29BFD090509" },
+  { name = "bath", version = "1.0.0", build_tools = ["gleam"], requirements = ["gleam_erlang", "gleam_otp", "gleam_stdlib"], otp_app = "bath", source = "hex", outer_checksum = "F0C484112A4AB172495ACC84E00EF5CAD977D60B84A0C243F04A433DAC915C46" },
   { name = "gleam_crypto", version = "1.4.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gleam_crypto", source = "hex", outer_checksum = "8AE56026B3E05EBB1F076778478A762E9EB62B31AEEB4285755452F397029D22" },
   { name = "gleam_erlang", version = "0.33.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gleam_erlang", source = "hex", outer_checksum = "A1D26B80F01901B59AABEE3475DD4C18D27D58FA5C897D922FCB9B099749C064" },
   { name = "gleam_json", version = "2.2.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gleam_json", source = "hex", outer_checksum = "093214EB186A88D301795A94F0A8128C2E24CF1423997ED31A6C6CC67FC3E1A1" },
@@ -19,6 +20,7 @@ packages = [
 ]
 
 [requirements]
+bath = { version = ">= 1.0.0 and < 2.0.0" }
 gleam_erlang = { version = ">= 0.33.0 and < 1.0.0" }
 gleam_otp = { version = ">= 0.16.0 and < 1.0.0" }
 gleam_stdlib = { version = ">= 0.34.0 and < 2.0.0" }

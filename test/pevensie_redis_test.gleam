@@ -1,6 +1,5 @@
 import gleam/erlang/process
 import gleam/option.{None, Some}
-import gleam/result
 import gleeunit
 import gleeunit/should
 import pevensie/cache
@@ -21,6 +20,7 @@ pub fn config_conversion_test() {
     timeout: 5000,
     username: None,
     password: None,
+    pool_size: 10,
   )
   |> redis_config_to_radish_start_options
   |> should.equal([radish.Timeout(5000)])
@@ -31,6 +31,7 @@ pub fn config_conversion_test() {
     timeout: 5000,
     username: Some("foo"),
     password: None,
+    pool_size: 10,
   )
   |> redis_config_to_radish_start_options
   |> should.equal([radish.AuthWithUsername("foo", ""), radish.Timeout(5000)])
@@ -41,6 +42,7 @@ pub fn config_conversion_test() {
     timeout: 5000,
     username: Some("foo"),
     password: Some("bar"),
+    pool_size: 10,
   )
   |> redis_config_to_radish_start_options
   |> should.equal([radish.AuthWithUsername("foo", "bar"), radish.Timeout(5000)])
@@ -51,6 +53,7 @@ pub fn config_conversion_test() {
     timeout: 5000,
     username: None,
     password: Some("bar"),
+    pool_size: 10,
   )
   |> redis_config_to_radish_start_options
   |> should.equal([radish.Auth("bar"), radish.Timeout(5000)])
@@ -64,17 +67,19 @@ pub fn connection_test() {
   let assert Ok(_) = client |> cache.disconnect
 }
 
-fn get_test_client() {
+fn get_test_client(next) {
   let assert Ok(client) =
     redis.new_cache_driver(default_config())
     |> cache.new
     |> cache.connect
 
-  client
+  let res = next(client)
+  let assert Ok(_) = cache.disconnect(client)
+  res
 }
 
 pub fn set_and_get_no_ttl_test() {
-  let client = get_test_client()
+  use client <- get_test_client()
   let assert Ok(Nil) =
     client
     |> cache.set(
@@ -89,7 +94,7 @@ pub fn set_and_get_no_ttl_test() {
 }
 
 pub fn set_and_get_with_ttl_test() {
-  let client = get_test_client()
+  use client <- get_test_client()
   let assert Ok(Nil) =
     client
     |> cache.set(
@@ -106,7 +111,7 @@ pub fn set_and_get_with_ttl_test() {
 }
 
 pub fn ttl_overrides_correctly_test() {
-  let client = get_test_client()
+  use client <- get_test_client()
   let assert Ok(Nil) =
     client
     |> cache.set(
@@ -132,7 +137,7 @@ pub fn ttl_overrides_correctly_test() {
 }
 
 pub fn ttl_clears_correctly_test() {
-  let client = get_test_client()
+  use client <- get_test_client()
   let assert Ok(Nil) =
     client
     |> cache.set(
@@ -158,7 +163,7 @@ pub fn ttl_clears_correctly_test() {
 }
 
 pub fn delete_test() {
-  let client = get_test_client()
+  use client <- get_test_client()
   let assert Ok(Nil) =
     client
     |> cache.set(
@@ -175,7 +180,7 @@ pub fn delete_test() {
 }
 
 pub fn delete_nonexistent_key_test() {
-  let client = get_test_client()
+  use client <- get_test_client()
 
   let assert Ok(Nil) =
     client
