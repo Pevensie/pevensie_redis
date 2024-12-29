@@ -12,18 +12,18 @@ import radish/error as radish_error
 type Radish =
   Subject(radish.Message)
 
-pub type Redis {
-  Redis(config: RedisConfig, conn: Option(bath.Pool(Radish)))
+pub opaque type Redis {
+  Redis(config: RedisConfig, conn: Option(bath.Pool(Radish, actor.StartError)))
 }
 
 pub type RedisError {
-  StartError(bath.InitError(actor.StartError))
+  StartError(bath.StartError(actor.StartError))
   ActorError
   ConnectionError
   TCPError(mug.Error)
   ServerError(String)
   ShutdownError(bath.ShutdownError)
-  PoolError(bath.ApplyError)
+  PoolError(bath.ApplyError(actor.StartError))
   UnknownResponseError
 }
 
@@ -101,13 +101,16 @@ pub fn new_cache_driver(
 fn connect(driver: Redis) -> Result(Redis, drivers.ConnectError(RedisError)) {
   case driver {
     Redis(config:, conn: None) -> {
-      bath.init(config.pool_size, fn() {
+      bath.new(fn() {
         radish.start(
           config.host,
           config.port,
           redis_config_to_radish_start_options(config),
         )
       })
+      |> bath.with_size(config.pool_size)
+      |> bath.with_shutdown(radish.shutdown)
+      |> bath.start(1000)
       |> result.map(fn(conn) { Redis(config: config, conn: Some(conn)) })
       |> result.map_error(fn(err) {
         drivers.ConnectDriverError(StartError(err))
@@ -123,7 +126,7 @@ fn disconnect(
   case driver {
     Redis(config: config, conn: Some(conn)) -> {
       use _ <- result.try(
-        bath.shutdown(conn, radish.shutdown, config.timeout)
+        bath.shutdown(conn, False, config.timeout)
         |> result.map_error(fn(err) {
           drivers.DisconnectDriverError(ShutdownError(err))
         }),
