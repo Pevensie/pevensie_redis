@@ -3,13 +3,17 @@ name: test
 on:
   push:
     branches:
-      - master
       - main
   pull_request:
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      valkey:
+        image: valkey/valkey:latest
+        ports:
+          - 6379:6379
     steps:
       - uses: actions/checkout@v4
       - uses: erlef/setup-beam@v1
