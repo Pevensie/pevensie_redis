@@ -3,9 +3,9 @@
 [![Package Version](https://img.shields.io/hexpm/v/pevensie_redis)](https://hex.pm/packages/pevensie_redis)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/pevensie_redis/)
 
-The official Redis-compatible driver for Pevensie. It provides driver
-implementations for Pevensie modules to be used with Redis-compatible
-databases.
+The official Redis-compatible driver for
+[Pevensie](https://github.com/Pevensie/pevensie). It provides driver implementations
+for Pevensie modules to be used with Redis-compatible databases.
 
 Currently provides drivers for:
 
@@ -85,9 +85,9 @@ timeout to complete.
 
 ## Development
 
-Tests rely on a local Redis instance running on port 6379. The repo includes a
-`compose.yaml` file to start a local Valkey instance for testing, but feel free
-to use any Redis instance you'd like.
+Tests rely on a local Redis-compatible database running on port 6379. The repo includes
+a `compose.yaml` file to start a local Valkey instance for testing, but feel free to
+use any Redis-compatible database you'd like.
 
 Tests  can be run with:
 

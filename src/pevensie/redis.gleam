@@ -12,18 +12,28 @@ import radish/error as radish_error
 type Radish =
   Subject(radish.Message)
 
+/// The Redis driver.
 pub opaque type Redis {
   Redis(config: RedisConfig, conn: Option(bath.Pool(Radish, actor.StartError)))
 }
 
+/// Errors that can occur when interacting with the Postgres driver.
 pub type RedisError {
+  /// The connection pool failed to start.
   StartError(bath.StartError(actor.StartError))
+  /// An error occurred in the underlying OTP actor.
   ActorError
+  /// There was an error connecting to the database.
   ConnectionError
+  /// A TCP error occurred.
   TCPError(mug.Error)
+  /// An error occurred on the server.
   ServerError(String)
+  /// There was an error shutting down the connection pool.
   ShutdownError(bath.ShutdownError)
+  /// There was an error applying a function to the connection pool.
   PoolError(bath.ApplyError(actor.StartError))
+  /// An unknown response was received from the server.
   UnknownResponseError
 }
 
@@ -40,6 +50,10 @@ fn radish_error_to_redis_error(err: radish_error.Error) -> RedisError {
   }
 }
 
+/// Configuration for connecting to a Redis-compatible database.
+///
+/// Use the [`default_config`](#default_config) function to get a default configuration
+/// for connecting to a local Redis database with sensible defaults.
 pub type RedisConfig {
   RedisConfig(
     host: String,
@@ -51,6 +65,8 @@ pub type RedisConfig {
   )
 }
 
+/// Returns a default [`RedisConfig`](#RedisConfig) for connecting to a local Redis
+/// database with sensible defaults.
 pub fn default_config() -> RedisConfig {
   RedisConfig(
     host: "localhost",
@@ -85,6 +101,23 @@ pub fn redis_config_to_radish_start_options(
   options
 }
 
+/// Creates a new [`CacheDriver`](/pevensie/drivers/drivers.html#CacheDriver) for use with
+/// the [`pevensie/cache.new`](/pevensie/cache.html#new) function.
+///
+/// ```gleam
+/// import pevensie/redis.{type RedisConfig}
+/// import pevensie/cache
+///
+/// pub fn main() {
+///   let config = RedisConfig(
+///     ..redis.default_config(),
+///     host: "cache.pevensie.dev",
+///   )
+///   let driver = redis.new_cache_driver(config)
+///   let pevensie_auth = cache.new(driver:)
+///   // ...
+/// }
+/// ```
 pub fn new_cache_driver(
   config: RedisConfig,
 ) -> cache.CacheDriver(Redis, RedisError) {
