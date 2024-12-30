@@ -1,19 +1,13 @@
 name = "pevensie_redis"
 version = "1.0.0"
-
-# Fill out these fields if you intend to generate HTML documentation or publish
-# your project to the Hex package manager.
-#
-# description = ""
-# licences = ["Apache-2.0"]
-# repository = { type = "github", user = "", repo = "" }
-# links = [{ title = "Website", href = "" }]
-#
-# For a full reference of all the available options, you can have a look at
-# https://gleam.run/writing-gleam/gleam-toml/.
+description = "The official Redis-compatible driver for the Pevensie framework"
+licences = ["MIT"]
+repository = { type = "github", user = "Pevensie", repo = "pevensie_redis" }
+links = [{ title = "Website", href = "https://pevensie.dev" }]
+target = "erlang"
 
 [dependencies]
-gleam_stdlib = ">= 0.34.0 and < 2.0.0"
+gleam_stdlib = ">= 0.51.0 and < 2.0.0"
 radish = ">= 0.15.0 and < 1.0.0"
 pevensie = ">= 1.0.0 and < 2.0.0"
 mug = ">= 1.2.0 and < 2.0.0"
